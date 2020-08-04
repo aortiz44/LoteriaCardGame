@@ -11,18 +11,16 @@ OUTPUT_DIR = "output_images"
 img_path = os.path.join(INPUT_DIR, "cake.jpg")
 
 
-# TODO: turn images into numpy arrays then arrange the image to fit 4 by 4 in a larger image
-
 def load_images_from_dir(data_dir, ext=".jpg", size=(180, 180)):
     imagesFiles = [f for f in os.listdir(data_dir) if f.endswith(ext)]
 
     card_deck = []
-    # imgs = []
     count = 0
 
     for f_name in imagesFiles:
         temp_np_img = np.array(cv2.imread(os.path.join(data_dir, f_name)))
-        resize_np_img = cv2.resize(temp_np_img, size)
+        RGB_img = cv2.cvtColor(temp_np_img, cv2.COLOR_BGR2RGB)
+        resize_np_img = cv2.resize(RGB_img, size)
         # imgs.append(temp_np_img)
         temp_card = Card(f_name, count, resize_np_img)
         card_deck.append(temp_card)
@@ -35,77 +33,89 @@ def load_images_from_dir(data_dir, ext=".jpg", size=(180, 180)):
 
 class My_main:
     def __init__(self):
-        Card_Deck = []
+        self.deck = Deck((230, 230))
+        self.new_card_size = 1000
+        self.new_card_offset = 10
+        self.new_card_length = 4
+        self.cards_made = []
+        self.card_made_values = []
+        self.card_num_to_make = 2
         pass
 
-    def start(self):
-        # Create 54 cards
+    def Start(self):
+        # for elem in self.deck.card_list:
+        #     print(np.shape(elem.image))
+        #     print(str(elem.number), elem.name)
+        #     # cv2.imshow(str(elem.number) + elem.name, elem.image)
+        #     # cv2.waitKey(0)
 
-        bg_size = 800
-        offset = 20
+        name_index = 0
+        for i in range(self.card_num_to_make):
+            # Pick 16 Random Cards
+            rng = default_rng()
+            random_array = rng.choice(18, size=16, replace=False)  # numbers 0 - 53
+            # random_array = np.random.randint(low=1, high=54, size=16)
+            random_array = np.array(random_array)
+            print(random_array)
+            # Make sure that other Cards previously made don't have at least 4 of the Cards in common
+            # if len(self.cards_made) <= 0:
+            # Create a new card
+            self.card_made_values.append(random_array)
+            card_lis = self.deck.search_deck(random_array)
+            self.Create_Card(card_lis, name_index)
+            # print(len(self.cards_made))
+            # print(self.cards_made)
+            name_index += 1
 
-        background_img = Image.new('RGB', (bg_size, bg_size))
-        im = Image.open(img_path)
-
-        img_size = int(bg_size / 4) - offset
-        im = im.resize((img_size, img_size))
-        top_range = bg_size + int(bg_size / 4) + int(offset / 2)
-        for i in range(int(offset / 2), top_range, int(bg_size / 4)):
-            for j in range(int(offset / 2), top_range, int(bg_size / 4)):
-                background_img.paste(im, (i, j))
-
-        background_img.show()
-        save_path = os.path.join(OUTPUT_DIR, 'Loteria_card.jpg')
-        background_img.save(save_path)
-
-    def Create_Deck(self):
-        # Read the images and resize them from directory
-        c_d = load_images_from_dir(INPUT_DIR, ext=".jpg", size=(180, 180))
-        for elem in c_d:
-            print(np.shape(elem.image))
-            print(str(elem.number), elem.name)
-            # cv2.imshow(str(elem.number) + elem.name, elem.image)
-            # cv2.waitKey(0)
-        self.Card_Deck = c_d
-        return
-
-    def Create_Card(self, num_list):
-        img_name_list = self.GetCardsFromList(num_list)
-        # print(img_name_list)
-        bg_size = 800
-        offset = 20
-
-        background_img = Image.new('RGB', (bg_size, bg_size))
-
-        top_range = bg_size + int(bg_size / 4) + int(offset / 2)
+    def Create_Card(self, card_list, name_index):
+        background_img = Image.new('RGB', (self.new_card_size, self.new_card_size))
+        top_range = self.new_card_size + int(self.new_card_offset)
         index = 0
-
-        for i in range(int(offset / 2), top_range, int(bg_size / 4)):
-            for j in range(int(offset / 2), top_range, int(bg_size / 4)):
-                if index < len(img_name_list):
-
-                    # img_p = os.path.join(INPUT_DIR, str(img_name_list[index]))
-                    # im = Image.open(img_p)
-                    # TODO images are coming out blue fix that issue probably during the conversion
-                    im = Image.fromarray(img_name_list[index].astype('uint8'), 'RGB')
-                    # img_list[index]
-                    background_img.paste(im, (i, j))
+        for i in range(int(self.new_card_offset), top_range, int(self.new_card_size / self.new_card_length)):
+            for j in range(int(self.new_card_offset), top_range, int(self.new_card_size / self.new_card_length)):
+                if index < len(card_list):
+                    # print(card_list[index].name)
+                    im = Image.fromarray(card_list[index].image.astype('uint8'), 'RGB')
+                    background_img.paste(im, (j, i))
                     index += 1
 
-        background_img.show()
-        save_path = os.path.join(OUTPUT_DIR, 'Loteria_card.jpg')
+        # background_img.show()
+        card_name = "Loteria card " + str(name_index) + " .jpg"
+        save_path = os.path.join(OUTPUT_DIR, card_name)
         background_img.save(save_path)
+        self.cards_made.append(background_img)
 
-    def GetCardsFromList(self, num_list):
-        img_name_list = []
-        for i in num_list:
-            for elem in self.Card_Deck:
+    # def compare_list_made(self, cur_ran_list):
+    #     same_v_count = 0
+    #     for elem in self.card_made_values:
+    #         print(elem)
+    #         for i in cur_ran_list:
+    #             if i in elem:
+    #                 # print(i, "is in ", elem)
+    #                 same_v_count += 1
+    #         # if the same count is high enough return and pick a new random list
+    #         if same_v_count >= 15:
+    #             return same_v_count
+    #         #
+    #         else:
+    #             same_v_count = 0
+    #     print(same_v_count)
+    #     return 0
+
+
+class Deck:
+    def __init__(self, img_size):
+        self.card_list = load_images_from_dir(INPUT_DIR, ext=".jpg", size=img_size)
+        pass
+
+    def search_deck(self, list_want):
+        card_list = []
+        for i in list_want:
+            for elem in self.card_list:
                 if elem.number == i:
-                    img_name_list.append(elem.image)
-                    print(elem.name)
+                    card_list.append(elem)
             # print(elem.name)
-
-        return img_name_list
+        return card_list
 
 
 class Card:
@@ -116,27 +126,5 @@ class Card:
         self.size = np.shape(image)
 
 
-cards_made = []
-
 m = My_main()
-m.start()
-m.Create_Deck()
-
-# Pick 16 Random Cards
-rng = default_rng()
-random_array = rng.choice(17, size=16, replace=False)  # numbers 0 - 53
-# random_array = np.random.randint(low=1, high=54, size=16)
-random_array = np.array(random_array)
-print(random_array)
-
-# Make sure that other Cards previously made don't have at least 4 of the Cards in common
-# if len(cards_made) <= 0:
-# Create a new card
-
-m.Create_Card(random_array)
-
-# else:
-#     # pick new random array
-#     rng = default_rng()
-#     random_array = rng.choice(17, size=16, replace=False)  # numbers 0 - 53
-#     print(random_array)
+m.Start()
