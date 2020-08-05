@@ -30,6 +30,8 @@ def load_images_from_dir(data_dir, ext=".jpg", size=(180, 180)):
     # resize_imgs = [cv2.resize(x, size) for x in imgs]
     return card_deck
 
+# TODO fix the size so that it can work with a rectangle instead of a square
+# change width to 2250 pixels by height 3000, that's the max of a 8.5 by 11 paper
 
 class My_main:
     def __init__(self):
@@ -53,7 +55,7 @@ class My_main:
         for i in range(self.card_num_to_make):
             # Pick 16 Random Cards
             rng = default_rng()
-            random_array = rng.choice(18, size=16, replace=False)  # numbers 0 - 53
+            random_array = rng.choice(19, size=16, replace=False)  # numbers 0 - 53
             # random_array = np.random.randint(low=1, high=54, size=16)
             random_array = np.array(random_array)
             print(random_array)
@@ -68,7 +70,7 @@ class My_main:
             name_index += 1
 
     def Create_Card(self, card_list, name_index):
-        background_img = Image.new('RGB', (self.new_card_size, self.new_card_size))
+        background_img = Image.new('RGB', (self.new_card_size, self.new_card_size), (255, 255, 255))
         top_range = self.new_card_size + int(self.new_card_offset)
         index = 0
         for i in range(int(self.new_card_offset), top_range, int(self.new_card_size / self.new_card_length)):
