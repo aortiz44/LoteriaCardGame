@@ -1,5 +1,4 @@
 import numpy as np
-import PIL
 from PIL import Image
 import os
 import cv2
@@ -8,11 +7,16 @@ from numpy.random._generator import default_rng
 INPUT_DIR = "input_images"
 OUTPUT_DIR = "output_images"
 
+
 img_path = os.path.join(INPUT_DIR, "cake.jpg")
 
 
 def load_images_from_dir(data_dir, ext=".jpg", size=(180, 180)):
     imagesFiles = [f for f in os.listdir(data_dir) if f.endswith(ext)]
+    # imagesFiles = []
+    # for f in os.listdir(data_dir):
+    #     if f.endswith(ext):
+    #         imagesFiles.append(f)
 
     card_deck = []
     count = 0
@@ -42,6 +46,7 @@ class My_main:
         self.cards_made = []
         self.card_made_values = []
         self.card_num_to_make = 2
+        self.num_pict_per_card = 16
         pass
 
     def Start(self):
@@ -52,10 +57,13 @@ class My_main:
         #     # cv2.waitKey(0)
 
         name_index = 0
+        print(len(self.deck.card_list))
+        num_choices = len(self.deck.card_list)
+
         for i in range(self.card_num_to_make):
             # Pick 16 Random Cards
             rng = default_rng()
-            random_array = rng.choice(19, size=16, replace=False)  # numbers 0 - 53
+            random_array = rng.choice(num_choices, size=self.num_pict_per_card, replace=False)  # numbers 0 - 53
             # random_array = np.random.randint(low=1, high=54, size=16)
             random_array = np.array(random_array)
             print(random_array)
