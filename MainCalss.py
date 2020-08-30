@@ -51,7 +51,7 @@ class My_main:
         self.new_card_length = 4
         self.cards_made = []
         self.card_made_values = []
-        self.card_num_to_make = 50
+        self.card_num_to_make = 2
         self.num_pict_per_card = 16
         pass
 
