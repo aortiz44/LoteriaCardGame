@@ -86,7 +86,7 @@ class My_main:
     def Create_Card(self, card_list, name_index):
         background_img = Image.new('RGB', (self.new_card_size, self.new_card_size), (255, 255, 255))
         top_range = self.new_card_size + int(self.new_card_offset)
-        index = 0
+        index = 1
         for i in range(int(self.new_card_offset), top_range, int(self.new_card_size / self.new_card_length)):
             for j in range(int(self.new_card_offset), top_range, int(self.new_card_size / self.new_card_length)):
                 if index < len(card_list):
