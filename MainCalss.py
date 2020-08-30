@@ -8,7 +8,7 @@ INPUT_DIR = "input_images"
 OUTPUT_DIR = "output_images"
 
 
-img_path = os.path.join(INPUT_DIR, "cake.jpg")
+img_path = os.path.join(INPUT_DIR, "01 el gallo.jpg")
 
 
 def load_images_from_dir(data_dir, ext=".jpg", size=(180, 180)):
@@ -17,12 +17,18 @@ def load_images_from_dir(data_dir, ext=".jpg", size=(180, 180)):
     # for f in os.listdir(data_dir):
     #     if f.endswith(ext):
     #         imagesFiles.append(f)
-
+    # print(len(imagesFiles))
     card_deck = []
     count = 0
 
     for f_name in imagesFiles:
-        temp_np_img = np.array(cv2.imread(os.path.join(data_dir, f_name)))
+        print(f_name)
+        # get image
+        get_image = cv2.imread(os.path.join(data_dir, f_name))
+        # turn it into np array
+        temp_np_img = np.array(get_image)
+        # !!!!!!!!!!! This will error out
+        # if the names of the cards have, accents like in the spanish language. !!!!!!!!!!!
         RGB_img = cv2.cvtColor(temp_np_img, cv2.COLOR_BGR2RGB)
         resize_np_img = cv2.resize(RGB_img, size)
         # imgs.append(temp_np_img)
@@ -39,13 +45,13 @@ def load_images_from_dir(data_dir, ext=".jpg", size=(180, 180)):
 
 class My_main:
     def __init__(self):
-        self.deck = Deck((230, 230))
-        self.new_card_size = 1000
+        self.deck = Deck((460, 460))
+        self.new_card_size = 2000
         self.new_card_offset = 10
         self.new_card_length = 4
         self.cards_made = []
         self.card_made_values = []
-        self.card_num_to_make = 2
+        self.card_num_to_make = 50
         self.num_pict_per_card = 16
         pass
 
