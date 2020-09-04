@@ -86,7 +86,7 @@ class My_main:
     def Create_Card(self, card_list, name_index):
         background_img = Image.new('RGB', (self.new_card_size, self.new_card_size), (255, 255, 255))
         top_range = self.new_card_size + int(self.new_card_offset)
-        index = 1
+        index = 0
         for i in range(int(self.new_card_offset), top_range, int(self.new_card_size / self.new_card_length)):
             for j in range(int(self.new_card_offset), top_range, int(self.new_card_size / self.new_card_length)):
                 if index < len(card_list):
@@ -144,3 +144,28 @@ class Card:
 
 m = My_main()
 m.Start()
+#
+# deck_length = len(m.deck.card_list)
+# print(deck_length)
+# list_remaining = [*range(0, deck_length)]
+# list_card_used = []
+# print(list_remaining)
+# random.shuffle(list_remaining)
+# print(list_remaining)
+# # for i in range(deck_length):
+# for i in range(5):
+#     # print("List of cards remaining")
+#     # print(list_remaining)
+#     card_picked = list_remaining[0]
+#     list_card_used.append(card_picked)
+#     del list_remaining[0]
+#     # print("List of cards Used")
+#     # print(list_card_used)
+#     print("Card Picked: ", card_picked)
+#     picked_card = m.deck.get_card_by_num(card_picked)
+#     # cv2.imshow(str(picked_card.number) + picked_card.name, picked_card.image)
+#     # cv2.waitKey(0)
+#
+#
+# # sample = random.sample(range(deck_length), deck_length)
+# # print(sample)
