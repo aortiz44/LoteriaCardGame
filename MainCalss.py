@@ -3,10 +3,10 @@ from PIL import Image
 import os
 import cv2
 from numpy.random._generator import default_rng
+import random
 
 INPUT_DIR = "input_images"
 OUTPUT_DIR = "output_images"
-
 
 img_path = os.path.join(INPUT_DIR, "01 el gallo.jpg")
 
@@ -39,6 +39,7 @@ def load_images_from_dir(data_dir, ext=".jpg", size=(180, 180)):
     # imgs = [np.array(cv2.imread(os.path.join(data_dir, f))) for f in imagesFiles]
     # resize_imgs = [cv2.resize(x, size) for x in imgs]
     return card_deck
+
 
 # TODO fix the size so that it can work with a rectangle instead of a square
 # change width to 2250 pixels by height 3000, that's the max of a 8.5 by 11 paper
@@ -101,6 +102,42 @@ class My_main:
         background_img.save(save_path)
         self.cards_made.append(background_img)
 
+    def call_out_cards(self, time_to_wait=3000, call_range=5):
+        deck_length = len(self.deck.card_list)
+        # print(deck_length)
+        list_remaining = [*range(0, deck_length)]
+        list_card_used = []
+        print(list_remaining)
+        random.shuffle(list_remaining)
+        print(list_remaining)
+        # for i in range(deck_length):
+        for i in range(call_range):
+            # print("List of cards remaining")
+            # print(list_remaining)
+            card_picked = list_remaining[0]
+            list_card_used.append(card_picked)
+            del list_remaining[0]
+            # print("List of cards Used")
+            # print(list_card_used)
+            print("Card Picked: ", card_picked)
+            picked_card = m.deck.get_card_by_num(card_picked)
+            window_name = str(picked_card.number) + picked_card.name
+            # -----------Swap Channels ------------------
+            card_img = picked_card.image
+            red = card_img[:, :, 2].copy()
+            blue = card_img[:, :, 0].copy()
+
+            card_img[:, :, 0] = red
+            card_img[:, :, 2] = blue
+
+            cv2.imshow(window_name, card_img)
+            key = cv2.waitKey(time_to_wait)  # pauses for 3 seconds before fetching next image
+            cv2.destroyWindow(window_name)
+            if key == 27:  # if ESC is pressed, exit loop
+                cv2.destroyAllWindows()
+                break
+
+
     # def compare_list_made(self, cur_ran_list):
     #     same_v_count = 0
     #     for elem in self.card_made_values:
@@ -133,6 +170,12 @@ class Deck:
             # print(elem.name)
         return card_list
 
+    def get_card_by_num(self, card_picked):
+        for elem in self.card_list:
+            if elem.number == card_picked:
+                return elem
+        pass
+
 
 class Card:
     def __init__(self, name, number, image):
@@ -143,29 +186,8 @@ class Card:
 
 
 m = My_main()
-m.Start()
-#
-# deck_length = len(m.deck.card_list)
-# print(deck_length)
-# list_remaining = [*range(0, deck_length)]
-# list_card_used = []
-# print(list_remaining)
-# random.shuffle(list_remaining)
-# print(list_remaining)
-# # for i in range(deck_length):
-# for i in range(5):
-#     # print("List of cards remaining")
-#     # print(list_remaining)
-#     card_picked = list_remaining[0]
-#     list_card_used.append(card_picked)
-#     del list_remaining[0]
-#     # print("List of cards Used")
-#     # print(list_card_used)
-#     print("Card Picked: ", card_picked)
-#     picked_card = m.deck.get_card_by_num(card_picked)
-#     # cv2.imshow(str(picked_card.number) + picked_card.name, picked_card.image)
-#     # cv2.waitKey(0)
-#
-#
-# # sample = random.sample(range(deck_length), deck_length)
-# # print(sample)
+create_cards = False
+
+if create_cards:
+    m.Start()
+m.call_out_cards(3000, 5)
