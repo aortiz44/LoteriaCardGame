@@ -190,4 +190,5 @@ create_cards = False
 
 if create_cards:
     m.Start()
+deck_length = len(m.deck.card_list)
 m.call_out_cards(3000, 5)
